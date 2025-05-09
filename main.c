@@ -12,8 +12,8 @@ pthread_t thread;
 
 int main(int argc, char *argv[])
 {
-    get_usage_params();
     handle_error_not_enough_args(argc);
+    get_usage_params();
     int pid = fork( );
     char program[N];
     strncpy(program, argv[1], N-1);
