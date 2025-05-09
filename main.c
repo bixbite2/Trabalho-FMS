@@ -1,22 +1,22 @@
 #include <limits.h>
-#include <pthread.h>
-#include <stdio.h>
 #include <sys/resource.h>
 #include <sys/sysinfo.h>
-#include <string.h>
 #include <unistd.h>
 #include <wait.h>
 #include "error_functions.h"
+#include "usage_monitor.h"
+#include "usage_interface.h"
 
 const int N = 300;
+pthread_t thread;
 
 int main(int argc, char *argv[])
 {
+    get_usage_params();
     handle_error_not_enough_args(argc);
     int pid = fork( );
     char program[N];
     strncpy(program, argv[1], N-1);
-    printf("PID <%d> tanto pai quanto o filho exibem esta mensagem!\n", getpid());
 
     if (pid < 0) {
         printf("Erro ao criar o processo!\n");
