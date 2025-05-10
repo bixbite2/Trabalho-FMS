@@ -1,1 +1,1 @@
-gcc main.c -o my_app.out
+gcc main.c -o my_app.out -lpthread
