@@ -7,7 +7,11 @@
 #include "usage_monitor.h"
 #include "usage_interface.h"
 
-#define NUMBER_OF_THREADS 10
+#define NUMBER_OF_THREADS 3
+// 3 threads, cada um para
+// Tempo maximo de CPU
+// Tempo maximo de execução
+// Uso máximo de RAM:
 
 const int N = 300;
 
@@ -16,10 +20,12 @@ int main(int argc, char *argv[])
     pthread_t threads[NUMBER_OF_THREADS];
 
     handle_error_not_enough_args(argc);
-    get_usage_params();
-    int pid = fork( );
-    char program[N];
-    strncpy(program, argv[1], N-1);
+    int *usage_params = get_usage_params();
+    // for (int test = 0; test < 3; test++) {
+    //     printf("Param %d: %d\n", test, usage_params[test]);
+    // } //Esse snippet pode ser usado para testar se recebesse os parametros corretamente
+
+
     int status, i;
     for(i=0; i < NUMBER_OF_THREADS; i++) {
         printf("Metodo Main. Criando thread %d\n", i);
@@ -30,6 +36,11 @@ int main(int argc, char *argv[])
         }
     }
 
+
+    int pid = fork( );
+
+    char program[N];
+    strncpy(program, argv[1], N-1);
     if (pid < 0) {
         printf("Erro ao criar o processo!\n");
     } else if (pid == 0) {
@@ -38,6 +49,7 @@ int main(int argc, char *argv[])
         execlp(program, NULL);
     }
 
+    free(usage_params);
     waitpid(pid, NULL, 0);
     return 1;
 }

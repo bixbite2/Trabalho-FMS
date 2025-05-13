@@ -1,21 +1,27 @@
-#include <stdio.h>
 #include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
 
-int get_usage_params(){
+const int n_of_params = 3;
+
+int* get_usage_params() {
     size_t zero = 0;
-    char *max_cpu_time = NULL;
-    char *max_run_time = NULL;
-    char *max_ram_usage = NULL;
-    printf("Tempo maximo de CPU:");
-    getline(&max_cpu_time, &zero, stdin);
-    printf("Tempo maximo de execução:");
-    getline(&max_run_time, &zero, stdin);
-    printf("Uso máximo de RAM:");
-    getline(&max_ram_usage, &zero, stdin);
-    printf("%s",max_cpu_time);
-    printf("%s",max_run_time);
-    printf("%s",max_ram_usage);
-    return 1;
-}
+    char *input = NULL;
+    int *usage_params = malloc(3 * sizeof(int));
 
+    printf("Tempo maximo de CPU: ");
+    getline(&input, &zero, stdin);
+    usage_params[0] = atoi(input);
+
+    printf("Tempo maximo de execução: ");
+    getline(&input, &zero, stdin);
+    usage_params[1] = atoi(input);
+
+    printf("Uso máximo de RAM: ");
+    getline(&input, &zero, stdin);
+    usage_params[2] = atoi(input);
+
+    free(input);
+    return usage_params;
+}
 
