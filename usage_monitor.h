@@ -5,9 +5,9 @@
 void *usage_monitor(void *tid);
 
 // Example thread function
+
 void *usage_monitor(void *tid) {
-  // Code that will be executed by the new thread
-  printf("Thread is running\n");
-  // Return a value from the thread (optional)
-  pthread_exit(NULL); // Terminates the thread
+  int id = (intptr_t)tid;
+  printf("Thread %d is running\n", id);
+  pthread_exit(NULL);
 }

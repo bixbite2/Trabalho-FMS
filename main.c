@@ -3,6 +3,7 @@
 #include <sys/sysinfo.h>
 #include <unistd.h>
 #include <wait.h>
+#include <stdint.h>
 #include "error_functions.h"
 #include "usage_monitor.h"
 #include "usage_interface.h"
@@ -29,7 +30,8 @@ int main(int argc, char *argv[])
     int status, i;
     for(i=0; i < NUMBER_OF_THREADS; i++) {
         printf("Metodo Main. Criando thread %d\n", i);
-            status = pthread_create(&threads[i], NULL, usage_monitor, (void *)i);
+            //status = pthread_create(&threads[i], NULL, usage_monitor, (void *)i);
+            status = pthread_create(&threads[i], NULL, usage_monitor, (void *)(intptr_t)i);
         if (status != 0) {
             printf("Oops. pthread create returned error code %d\n", status);
             exit(-1);
