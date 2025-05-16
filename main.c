@@ -22,6 +22,7 @@ int main(int argc, char *argv[])
 
     handle_error_not_enough_args(argc);
     int *usage_params = get_usage_params();
+    thread_arg_t args[NUMBER_OF_THREADS];
     // for (int test = 0; test < 3; test++) {
     //     printf("Param %d: %d\n", test, usage_params[test]);
     // } //Esse snippet pode ser usado para testar se recebesse os parametros corretamente
@@ -30,8 +31,10 @@ int main(int argc, char *argv[])
     int status, i;
     for(i=0; i < NUMBER_OF_THREADS; i++) {
         printf("Metodo Main. Criando thread %d\n", i);
-            //status = pthread_create(&threads[i], NULL, usage_monitor, (void *)i);
-            status = pthread_create(&threads[i], NULL, usage_monitor, (void *)(intptr_t)i);
+        args[i].tid = i;
+        args[i].params = usage_params;
+        //status = pthread_create(&threads[i], NULL, usage_monitor, (void *)i);
+        status = pthread_create(&threads[i], NULL, usage_monitor, &args[i]);
         if (status != 0) {
             printf("Oops. pthread create returned error code %d\n", status);
             exit(-1);
