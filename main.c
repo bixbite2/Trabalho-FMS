@@ -74,6 +74,7 @@ int main(int argc, char *argv[])
         }
 
         for (i = 0; i < NUMBER_OF_THREADS; i++) {
+            printf("milena");
             pthread_join(threads[i], NULL);
         }
 

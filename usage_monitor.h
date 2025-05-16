@@ -6,14 +6,19 @@
 #include <string.h>
 #include <pthread.h>
 
-#define MAX_PIDS 32768
+#define MAX_TIDS 32768
 
-static int pid_exist[MAX_PIDS];
+static int pid_exist[MAX_TIDS];
+
+// struct criada para deixar mais intuitivo o que está sendo manipulado ao inves de usar simplesmente "int"
+typedef struct {
+    int id;
+} thread_info_t;
 
 // Thread function that monitors processes
 void *usage_monitor(void *arg){
-    int tid = *((int*)arg);
-    int vec[MAX_PIDS] = {0};
+    thread_info_t *tid = (thread_info_t*)arg;
+    int vec[MAX_TIDS] = {0};
 
     if (vec == NULL){
         perror("calloc");
@@ -21,6 +26,7 @@ void *usage_monitor(void *arg){
     }
 
     printf("thread %d is running\n", tid);
+    printf("bruno");
 
     while (1){
         memset(vec, 0, sizeof(0));
@@ -36,7 +42,7 @@ void *usage_monitor(void *arg){
           //verify if entry as a number, represent as PID
             if (isdigit(*entry -> d_name)){
                 int pid = atoi(entry -> d_name);
-                if (pid > 0 && pid < MAX_PIDS){
+                if (pid > 0 && pid < MAX_TIDS){
                     vec[pid] = 1;
                     //if the process is new, printf
                     if (!pid_exist[pid])
@@ -48,7 +54,7 @@ void *usage_monitor(void *arg){
         closedir(dp);
 
         //check finished processes
-        for (int i = 1; i < MAX_PIDS; i++){
+        for (int i = 1; i < MAX_TIDS; i++){
             if (pid_exist[i] && !vec[i])
                 printf("Process finished: %d\n", i);
 
