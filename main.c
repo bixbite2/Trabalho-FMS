@@ -27,21 +27,6 @@ int main(int argc, char *argv[])
     //     printf("Param %d: %d\n", test, usage_params[test]);
     // } //Esse snippet pode ser usado para testar se recebesse os parametros corretamente
 
-
-    int status, i;
-    for(i=0; i < NUMBER_OF_THREADS; i++) {
-        printf("Metodo Main. Criando thread %d\n", i);
-        args[i].tid = i;
-        args[i].params = usage_params;
-        //status = pthread_create(&threads[i], NULL, usage_monitor, (void *)i);
-        status = pthread_create(&threads[i], NULL, usage_monitor, &args[i]);
-        if (status != 0) {
-            printf("Oops. pthread create returned error code %d\n", status);
-            exit(-1);
-        }
-    }
-
-
     int pid = fork( );
 
     char program[N];
@@ -52,6 +37,23 @@ int main(int argc, char *argv[])
         /* processo filho */
         printf("Esse eh o processo filho com PID %d!\n", getpid());
         execlp(program, NULL);
+    }
+    if (pid > 0) {
+        // printf("O pid é %d\n",pid);
+        int status, i;
+        for(i=0; i < NUMBER_OF_THREADS; i++) {
+            printf("Metodo Main. Criando thread %d\n", i);
+            args[i].tid = i;
+            args[i].pid = pid;
+            args[i].params = usage_params;
+            //status = pthread_create(&threads[i], NULL, usage_monitor, (void *)i);
+            status = pthread_create(&threads[i], NULL, usage_monitor, &args[i]);
+            pthread_join(threads[i], NULL);
+            if (status != 0) {
+                printf("Oops. pthread create returned error code %d\n", status);
+                exit(-1);
+            }
+        }
     }
 
     free(usage_params);
