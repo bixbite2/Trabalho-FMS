@@ -1,14 +1,10 @@
-#include <unistd.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <signal.h>
+#ifndef ERROR_FUNCTIONS_H
+#define ERROR_FUNCTIONS_H
 
-int handle_error_not_enough_args(int args)
-{
-    if (args < 2) {
-        printf("Error: Not enough arguments.");
-        exit(1);
-        return 0;
-    }
-}
+#include <stdio.h>
+#include <stdlib.h>
+
+void handle_error_not_enough_args(int args);
+
+#endif
 

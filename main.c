@@ -36,7 +36,7 @@ int main(int argc, char *argv[])
     } else if (pid == 0) {
         /* processo filho */
         printf("Esse eh o processo filho com PID %d!\n", getpid());
-        execlp(program, NULL);
+        execlp(program, program, (char *)NULL);
     }
     if (pid > 0) {
         // printf("O pid é %d\n",pid);
