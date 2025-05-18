@@ -1,9 +1,8 @@
 #include <limits.h>
-#include <sys/resource.h>
 #include <sys/sysinfo.h>
 #include <unistd.h>
-#include <wait.h>
 #include <stdint.h>
+#include <wait.h>
 #include "error_functions.h"
 #include "usage_monitor.h"
 #include "usage_interface.h"
