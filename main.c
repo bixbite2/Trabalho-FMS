@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
         printf("Erro ao criar o processo!\n");
     } else if (pid == 0) {
         /* processo filho */
-        printf("Esse eh o processo filho com PID %d!\n", getpid());
+        // printf("Esse eh o processo filho com PID %d!\n", getpid());
         execlp(program, program, (char *)NULL);
     }
     if (pid > 0) {
@@ -47,7 +47,7 @@ int main(int argc, char *argv[])
             args[i].params = usage_params;
             //status = pthread_create(&threads[i], NULL, usage_monitor, (void *)i);
             status = pthread_create(&threads[i], NULL, usage_monitor, &args[i]);
-            pthread_join(threads[i], NULL);
+            // pthread_join(threads[i], NULL);
             if (status != 0) {
                 printf("Oops. pthread create returned error code %d\n", status);
                 exit(-1);
@@ -55,7 +55,7 @@ int main(int argc, char *argv[])
         }
     }
 
-    free(usage_params);
+    // free(usage_params);
     waitpid(pid, NULL, 0);
     return 1;
 }

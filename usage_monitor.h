@@ -7,6 +7,9 @@
 #include <stdlib.h>
 #include <string.h>   // para strrchr, strchr
 #include <unistd.h>   // para sysconf, _SC_CLK_TCK
+#include <signal.h>
+#include <sys/wait.h>
+
 
 typedef struct {
   int tid;
