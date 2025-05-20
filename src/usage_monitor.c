@@ -1,5 +1,6 @@
 #include "usage_monitor.h"
 
+volatile sig_atomic_t stop_all = 0;
 void *usage_monitor(void *arg) {
   thread_arg_t *data = (thread_arg_t *)arg;
   int id = data -> tid;
@@ -16,7 +17,7 @@ void *usage_monitor(void *arg) {
 
   if (id == cpu_monitor) {
     double cpu_time = get_process_stats(process_id)[0];
-    while (cpu_time < params[0]) {
+    while (!stop_all && cpu_time < params[0]) {
       printf("CPU time (user + system): %.2f seconds\n", cpu_time);
       sleep(1);
       cpu_time = get_process_stats(process_id)[0];
@@ -24,7 +25,7 @@ void *usage_monitor(void *arg) {
   }
   if (id == uptime_monitor) {
     double uptime = get_process_stats(process_id)[1];
-    while (uptime < params[1]) {
+    while (!stop_all && uptime < params[1]) {
       printf("Uptime: %.2f seconds\n", uptime);
       sleep(1);
       uptime = get_process_stats(process_id)[1];
@@ -32,13 +33,14 @@ void *usage_monitor(void *arg) {
   }
   if (id == ram_monitor) {
     double ram_usage = get_process_stats(process_id)[2];
-    while (ram_usage < params[2]) {
+    while (!stop_all && ram_usage < params[2]) {
       printf("RAM usage: %.2f mb\n", ram_usage);
       sleep(1);
       ram_usage = get_process_stats(process_id)[2];
     }
   }
 
+  stop_all = 1;
   kill(process_id, sig_term);
   pthread_exit(NULL);
 }
@@ -87,6 +89,10 @@ double* get_process_stats(pid_t pid) {
     stats[1] = uptime - (starttime / (double)clk_tck);
 
     // memória (RSS) de /proc/[pid]/statm
+    //
+    // In computing, resident set size is the portion of memory occupied by a
+    //                   process that is held in main memory.
+
     snprintf(path, sizeof(path), "/proc/%d/statm", pid);
     file_pointer = fopen(path, "r");
     if (!file_pointer) return NULL;
