@@ -1,16 +1,18 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -g
-LDFLAGS = -lpthread
+CFLAGS = -Wall -Iinclude
+SRC_DIR = src
+OBJ_DIR = obj
+BIN = my_app.out
 
-SRCS = main.c error_functions.c usage_interface.c usage_monitor.c
-OBJS = $(SRCS:.c=.o)
-TARGET = my_app.out
+SRC = $(wildcard $(SRC_DIR)/*.c)
+OBJ = $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRC))
 
-all: $(TARGET)
+$(BIN): $(OBJ)
+	$(CC) $(OBJ) -o $@
 
-$(TARGET): $(OBJS)
-	$(CC) $(OBJS) -g -o $@ $(LDFLAGS)
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
+	@mkdir -p $(OBJ_DIR)
+	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -f $(OBJS) $(TARGET)
-
+	rm -rf $(OBJ_DIR) $(BIN)
