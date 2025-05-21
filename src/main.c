@@ -6,6 +6,7 @@
 #include "error_functions.h"
 #include "usage_monitor.h"
 #include "usage_interface.h"
+#include "process_info.h"
 
 #define NUMBER_OF_THREADS 3
 // 3 threads, cada um para
@@ -53,10 +54,20 @@ int main(int argc, char *argv[])
                 exit(-1);
             }
         }
-    }
+        while (1){
+                    if (waitpid(pid , NULL, WNOHANG) == 0){
+                        process_info();
+                        sleep(1);
+                    } else 
+                        break;
+                }
+            }
+
 
     // free(usage_params);
     waitpid(pid, NULL, 0);
+    printf("Father Process %d:\n", getpid());
+    print_process_info(pid , 0);
     return 1;
 }
 
