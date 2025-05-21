@@ -3,59 +3,53 @@
 #include <unistd.h>
 #include <string.h>
 #include <sys/types.h>
+#include <dirent.h>
+#include <ctype.h>
 #include "process_info.h"
 
-void print_process_info(pid_t pid){
-    char path[256], buffer[1024];
-    FILE *fp;
+void process_info(){
+    char path[256], buffer[512];
+    Process array[MAX_PROCESS], p;
+    int qtd = 0;
+    
+    DIR *dir = opendir("/proc");
+    struct dirent *entry;
+    
+    
+    while ((entry = readdir(dir)) != NULL) {
+        if (isdigit(entry->d_name[0])) {
+            pid_t pid = atoi(entry->d_name);
+            snprintf(path, sizeof(path), "/proc/%d/status", pid);
+            
+            FILE *f = fopen(path, "r");
+            if (!f) continue;
+            
+            p.pid = pid;
+            p.ppid = -1;
+            strcpy(p.name, "desconhecido");
 
-    printf("\n========== Processo PID %d ==========\n", pid);
-
-    snprintf(path, sizeof(path), "/proc/%d/comm", pid);
-    fp = fopen(path, "r");
-
-    if (fp) {
-        if (fgets(buffer, sizeof(buffer), fp))
-            printf("Nome do processo: %s", buffer);
-        fclose(fp);
-    }
-
-    //process status
-    snprintf(path, sizeof(path), "/proc/%d/status", pid);
-    fp = fopen(path, "r");
-
-    if (fp){
-        printf("\n--- Status ---\n");
-        while (fgets(buffer, sizeof(buffer), fp)){
-            if (strncmp(buffer, "State:", 6) == 0 || strncmp(buffer, "VmRSS:", 6) == 0 || strncmp(buffer, "Threads:", 8) == 0)
-                printf("%s", buffer);            
+            while (fgets(buffer, sizeof(buffer), f)) {
+                if (strncmp(buffer, "Name:", 5) == 0) 
+                    sscanf(buffer, "Name:\t%255s", p.name);
+                else if (strncmp(buffer, "PPid:", 5) == 0)
+                    sscanf(buffer, "PPid:\t%d", &p.ppid);
+            }
+            fclose(f);
+            array[qtd++] = p;
         }
-        
-        fclose(fp);
     }
     
-    //cpu information
-    snprintf(path, sizeof(path), "/proc/%d/stat", pid);
-    fp = fopen(path, "r");
-
-    if (fp){
-        unsigned long utime, stime;
-
-        for (int i = 0; i < 13; i++)
-            fscanf(fp, "%s", buffer);
-        
-        fscanf(fp, "%lu", &utime);
-        fscanf(fp, "%lu", &stime);
-
-
-        printf("\n--- Tempo de CPU ---\n");
-        printf("User mode: %.2f s\n", utime / (double)sysconf(_SC_CLK_TCK));
-        printf("User mode: %.2f s\n", stime / (double)sysconf(_SC_CLK_TCK));
-
-        fclose(fp);
-    }
-
-    printf("=====================================\n\n");
-
+    extern qtd, array, pid;
+    closedir(dir);
     
+}
+
+void print_process_info(pid_t ppid, int lvl){
+    for (int i = 0; i < qtd; i++){        
+        if (array[i].ppid == ppid) {
+            for (int j = 0; i < lvl;j++) printf("  "); 
+            printf("└─ %s (PID: %d)\n", array[i].name, array[i].pid);
+            print_process_info(array[i].pid, lvl + 1);
+        }
+    }
 }
