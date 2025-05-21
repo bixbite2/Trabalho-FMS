@@ -3,6 +3,15 @@
 
 #include <sys/types.h>
 
-void print_process_info(pid_t pid);
+#define MAX_PROCESS 4096
+
+typedef struct {
+    pid_t pid;
+    int ppid;
+    char name[256];
+} Process;
+
+void process_info();
+void print_process_info(pid_t ppid, int lvl);
 
 #endif
