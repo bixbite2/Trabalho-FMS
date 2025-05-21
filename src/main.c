@@ -26,7 +26,7 @@ int main(int argc, char *argv[]) {
     // (void *)i
     // handle_error_not_enough_args(argc);
     // get_usage_params();
-    pid_t processo_pai, processo_filho;
+    pid_t processo_filho;
     processo_filho = create_process();
 
     char program[N];
