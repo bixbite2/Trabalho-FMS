@@ -5,7 +5,7 @@
 
 void *thread_created_function(void *arg){
     thread_arg_t args[NUMBER_THREADS];
-    extern pthread_t threads[NUMBER_THREADS];
+    pthread_t threads[NUMBER_THREADS];
     
     thread_arg_t *info = (thread_arg_t *)arg;
     int id = info -> tid;
@@ -28,4 +28,6 @@ void *thread_created_function(void *arg){
             exit(EXIT_FAILURE);
         }
     }
+
+    return NULL;
 }
