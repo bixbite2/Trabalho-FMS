@@ -95,5 +95,9 @@ clean:
 	@echo Cleanup complete!
 
 run: all
-	./$(OUTPUTMAIN)
+	# ./$(OUTPUTMAIN) $(BIN)
+	./$(OUTPUTMAIN) $(word 2, $(MAKECMDGOALS))
 	@echo Executing 'run: all' complete!
+
+%:
+	@:

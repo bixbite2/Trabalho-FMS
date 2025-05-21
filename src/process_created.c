@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <sys/wait.h>
 #include "process_created.h"
-#include "execute_program.h"
 #include <unistd.h>
 
 pid_t create_process(){

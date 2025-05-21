@@ -3,7 +3,7 @@
 
 #include <sys/types.h>
 
-#define MAX_PROCESS 4096
+#define MAX_PROCESS 8192
 
 typedef struct {
     pid_t pid;
