@@ -17,5 +17,3 @@ int get_usage_params(){
     printf("%s",max_ram_usage);
     return 1;
 }
-
-
