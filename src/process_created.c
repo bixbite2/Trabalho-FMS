@@ -8,15 +8,9 @@ pid_t create_process(){
     pid_t pid = fork();
 
     if (pid < 0)
-        perror("não deu certo o fork");
-    else if (pid == 0){
+        perror("não deu certo o fork, msg bnt pro bruno");
+    else if (pid == 0) 
         printf("Processo filho com PID %d\n", getpid());
-
-        // if (execute_program(program_path, argv) == -1)
-        //     exit(EXIT_FAILURE);
-        
-    }
     
     return pid;
 }
-
