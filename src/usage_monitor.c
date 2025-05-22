@@ -17,29 +17,29 @@ void *usage_monitor(void *arg) {
   printf("Monitored process is %d\n", process_id);
 
   if (id == cpu_monitor) {
-    double cpu_time = get_process_stats(process_id)[0];
+    double cpu_time = get_process_stats(process_id, params)[0];
     while (!stop_all && cpu_time < params[0]) {
       printf("CPU time (user + system): %.2f seconds\n", cpu_time);
       sleep(check_frequency);
-      cpu_time = get_process_stats(process_id)[0];
+      cpu_time = get_process_stats(process_id, params)[0];
     }
     printf("Process killed by CPU time.\n");
   }
   if (id == uptime_monitor) {
-    double uptime = get_process_stats(process_id)[1];
+    double uptime = get_process_stats(process_id, params)[1];
     while (!stop_all && uptime < params[1]) {
       printf("Uptime: %.2f seconds\n", uptime);
       sleep(check_frequency);
-      uptime = get_process_stats(process_id)[1];
+      uptime = get_process_stats(process_id, params)[1];
     }
     printf("Process killed by usage time.\n");
   }
   if (id == ram_monitor) {
-    double ram_usage = get_process_stats(process_id)[2];
+    double ram_usage = get_process_stats(process_id, params)[2];
     while (!stop_all && ram_usage < params[2]) {
       printf("RAM usage: %.2f mb\n", ram_usage);
       sleep(check_frequency);
-      ram_usage = get_process_stats(process_id)[2];
+      ram_usage = get_process_stats(process_id, params)[2];
     }
     printf("Process killed by RAM usage.\n");
   }
@@ -49,7 +49,7 @@ void *usage_monitor(void *arg) {
   pthread_exit(NULL);
 }
 
-double* get_process_stats(pid_t pid) {
+double* get_process_stats(pid_t pid, int *params) {
     static double stats[3]; // [cpu_time, uptime, ram_usage]
 
     // Abrir /proc/[pid]/stat
@@ -106,7 +106,16 @@ double* get_process_stats(pid_t pid) {
     fclose(file_pointer);
 
     long page_size = sysconf(_SC_PAGESIZE); // em bytes
-    stats[2] = (rss * page_size) / 1024.0 / 1024.0; // em MB
+    stats[2] = (rss * page_size) / 1024.0 / 1024.0; // Atual RAM usage em MB
+
+    // Save stats to last_usage file in simple format: "cpu_time uptime max_ram"
+    FILE *last_usage = fopen("last_usage", "w");
+    if (last_usage) {
+        fprintf(last_usage, "%.2f %.2f %d", stats[0], stats[1], params[2]);
+        fclose(last_usage);
+    } else {
+        perror("Error opening last_usage file");
+    }
 
     return stats;
 }
