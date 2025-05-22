@@ -13,4 +13,3 @@ void erro_exec(const char *program);
 void erro_open(const char *file);
 
 #endif
-
