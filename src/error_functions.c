@@ -1,4 +1,3 @@
-
 #include "error_functions.h"
 
 void terminate_program(const char *message, int exit_code, int sys_errno) {
@@ -32,4 +31,3 @@ void erro_open(const char *file) {
     snprintf(msg, sizeof(msg), "Falha ao abrir o arquivo: %s", file);
     terminate_program(msg, EXIT_FAILURE, errno);
 }
-
