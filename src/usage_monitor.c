@@ -10,7 +10,8 @@ void *usage_monitor(void *arg) {
   int cpu_monitor = 0;
   int uptime_monitor = 1;
   int ram_monitor = 2;
-  int sig_term = 9;
+  int sig_term = 15;
+  int check_frequency = 1;
 
   printf("Thread %d is running\n", id);
   printf("Monitored process is %d\n", process_id);
@@ -19,25 +20,28 @@ void *usage_monitor(void *arg) {
     double cpu_time = get_process_stats(process_id)[0];
     while (!stop_all && cpu_time < params[0]) {
       printf("CPU time (user + system): %.2f seconds\n", cpu_time);
-      sleep(1);
+      sleep(check_frequency);
       cpu_time = get_process_stats(process_id)[0];
     }
+    printf("Process killed by CPU time.\n");
   }
   if (id == uptime_monitor) {
     double uptime = get_process_stats(process_id)[1];
     while (!stop_all && uptime < params[1]) {
       printf("Uptime: %.2f seconds\n", uptime);
-      sleep(1);
+      sleep(check_frequency);
       uptime = get_process_stats(process_id)[1];
     }
+    printf("Process killed by usage time.\n");
   }
   if (id == ram_monitor) {
     double ram_usage = get_process_stats(process_id)[2];
     while (!stop_all && ram_usage < params[2]) {
       printf("RAM usage: %.2f mb\n", ram_usage);
-      sleep(1);
+      sleep(check_frequency);
       ram_usage = get_process_stats(process_id)[2];
     }
+    printf("Process killed by RAM usage.\n");
   }
 
   stop_all = 1;
