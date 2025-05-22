@@ -11,7 +11,7 @@ void *usage_monitor(void *arg) {
   int uptime_monitor = 1;
   int ram_monitor = 2;
   int sig_term = 15;
-  int check_frequency = 1;
+  float check_frequency = 1;
 
   printf("Thread %d is running\n", id);
   printf("Monitored process is %d\n", process_id);
@@ -108,7 +108,7 @@ double* get_process_stats(pid_t pid, int *params) {
     long page_size = sysconf(_SC_PAGESIZE); // em bytes
     stats[2] = (rss * page_size) / 1024.0 / 1024.0; // Atual RAM usage em MB
 
-    // Save stats to last_usage file in simple format: "cpu_time uptime max_ram"
+    // Salvando no last_usage
     FILE *last_usage = fopen("last_usage", "w");
     if (last_usage) {
         fprintf(last_usage, "%.2f %.2f %d", stats[0], stats[1], params[2]);

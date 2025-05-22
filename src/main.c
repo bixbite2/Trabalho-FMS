@@ -11,6 +11,7 @@
 #include "usage_monitor.h"
 #include "usage_interface.h"
 #include "process_info.h"
+#include "usage_repeat.h"
 
 #define NUMBER_OF_THREADS 3
 
@@ -18,9 +19,7 @@ const int N = 300;
 
 int main(int argc, char *argv[])
 {
-    
     handle_error_not_enough_args(argc);
-
     
     int *usage_params = get_usage_params();
     if (usage_params == NULL) {
@@ -56,7 +55,6 @@ int main(int argc, char *argv[])
         int status;
         pid_t result_waitpid;
 
-
         for (int i = 0; i < 50; ++i) { 
             result_waitpid = waitpid(pid, &status, WNOHANG);
             if (result_waitpid == pid) {
@@ -76,7 +74,6 @@ int main(int argc, char *argv[])
 
         free(exec_args);
 
-    
         pthread_t threads[NUMBER_OF_THREADS];
         thread_arg_t thread_args[NUMBER_OF_THREADS];
 
@@ -93,6 +90,32 @@ int main(int argc, char *argv[])
             }
         }
 
+        // Create a thread for usage_repeat
+        pthread_t repeat_thread;
+        int repeat_result = 1;  // Initially true
+        thread_arg_t repeat_args = {.tid = NUMBER_OF_THREADS, .pid = pid, .params = usage_params};
+
+        while (repeat_result) {
+            status = pthread_create(&repeat_thread, NULL, usage_repeat, &repeat_args);
+            if (status != 0) {
+                fprintf(stderr, "Erro: pthread_create para usage_repeat retornou o código de erro %d. Abortando.\n", status);
+                break;
+            }
+
+            void *thread_return;
+            pthread_join(repeat_thread, &thread_return);
+            if (thread_return != NULL) {
+                repeat_result = *(int*)thread_return;
+            } else {
+                break;  // Exit loop if thread returned NULL
+            }
+
+            if (repeat_result) {
+                sleep(1);  // Wait before checking again
+            }
+        }
+
+        // After loop ends, wait for process to finish
         while (1) {
             result_waitpid = waitpid(pid, NULL, WNOHANG);
             if (result_waitpid == 0) {

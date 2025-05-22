@@ -1,23 +1,40 @@
 #include "usage_repeat.h"
+#include "usage_monitor.h"
+#include <stdio.h>
+#include <stdlib.h>
 
-int* usage_repeat(double params[]) {
-    size_t zero = 0;
-    char *input = NULL;
-    int *usage_params = malloc(3 * sizeof(int));
+double resources_left[3];
 
-    printf("Tempo maximo de CPU: ");
-    getline(&input, &zero, stdin);
-    usage_params[0] = atoi(input);
+void* usage_repeat(void *arg) {
+    thread_arg_t *data = (thread_arg_t *)arg;
+    int *params = data->params;
+    static int result = 1;  // Initially true
 
-    printf("Tempo maximo de execução: ");
-    getline(&input, &zero, stdin);
-    usage_params[1] = atoi(input);
+    FILE *last_usage = fopen("last_usage", "r");
+    if (!last_usage) {
+        perror("fopen");
+        return NULL;
+    }
 
-    printf("Uso máximo de RAM: ");
-    getline(&input, &zero, stdin);
-    usage_params[2] = atoi(input);
+    for (int i = 0; i < 3; i++) {
+        if (fscanf(last_usage, "%lf", &resources_left[i]) != 1) {
+            fprintf(stderr, "Erro ao ler recurso %d de last_usage\n", i);
+            fclose(last_usage);
+            return NULL;
+        }
+        // Check if any resource is greater than its parameter
+        if (resources_left[i] > params[i]) {
+            result = 0;  // Return false if any resource exceeds its limit
+            break;
+        }
+    }
 
-    free(input);
-    return usage_params;
+    printf("resources_left: %.2f %.2f %.2f\n", resources_left[0], resources_left[1], resources_left[2]);
+    printf("Parametros: %d %d %d\n", params[0], params[1], params[2]);
+    fclose(last_usage);
+    
+    int *ret = malloc(sizeof(int));
+    *ret = result;
+    return ret;
 }
 
