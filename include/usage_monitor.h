@@ -18,7 +18,7 @@ typedef struct {
 } thread_arg_t;
 
 void *usage_monitor(void *arg);
-double* get_process_stats(pid_t pid, int *params);
+double* get_process_stats(pid_t pid);
 
 #endif
 
