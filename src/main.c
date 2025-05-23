@@ -13,6 +13,7 @@
 #include "usage_monitor.h"
 #include "usage_interface.h"
 #include "process_info.h"
+#include "usage_repeat.h"
 
 #define NUMBER_OF_THREADS 3
 
@@ -95,6 +96,7 @@ int main(int argc, char *argv[])
             }
         }
 
+
         while (1) {
             result_waitpid = waitpid(pid, NULL, WNOHANG);
             if (result_waitpid == 0) {
@@ -105,7 +107,11 @@ int main(int argc, char *argv[])
             }
         }
 
-        waitpid(pid, NULL, 0);
+        double *results = usage_repeat(usage_params);
+        printf("%f\n",results[0]);
+        printf("%f\n",results[1]);
+        printf("%f\n",results[2]);
+        // waitpid(pid, NULL, 0);
         printf("Father Process %d:\n", getpid());
         print_process_info(pid, 0);
         free(usage_params);

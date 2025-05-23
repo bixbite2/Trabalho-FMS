@@ -1,23 +1,11 @@
 #include "usage_repeat.h"
 
-int* usage_repeat(double params[]) {
-    size_t zero = 0;
-    char *input = NULL;
-    int *usage_params = malloc(3 * sizeof(int));
+double* usage_repeat(int *array) {
+    static double result[3];
 
-    printf("Tempo maximo de CPU: ");
-    getline(&input, &zero, stdin);
-    usage_params[0] = atoi(input);
+    result[0] = array[0] - stats[0];
+    result[1] = array[1] - stats[1];
+    result[2] = array[2] - stats[2];
 
-    printf("Tempo maximo de execução: ");
-    getline(&input, &zero, stdin);
-    usage_params[1] = atoi(input);
-
-    printf("Uso máximo de RAM: ");
-    getline(&input, &zero, stdin);
-    usage_params[2] = atoi(input);
-
-    free(input);
-    return usage_params;
+    return result;
 }
-

@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int* usage_repeat(double params[]);
+double* usage_repeat(int *array);
+extern double stats[3]; // [cpu_time, uptime, ram_usage]
 
 #endif

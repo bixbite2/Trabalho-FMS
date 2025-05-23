@@ -1,5 +1,6 @@
 #include "usage_monitor.h"
 
+double stats[3]; // [cpu_time, uptime, ram_usage]
 volatile sig_atomic_t stop_all = 0;
 void *usage_monitor(void *arg) {
   thread_arg_t *data = (thread_arg_t *)arg;
@@ -50,8 +51,6 @@ void *usage_monitor(void *arg) {
 }
 
 double* get_process_stats(pid_t pid) {
-    static double stats[3]; // [cpu_time, uptime, ram_usage]
-
     // Abrir /proc/[pid]/stat
     char path[64];
     snprintf(path, sizeof(path), "/proc/%d/stat", pid);
