@@ -4,5 +4,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void* usage_repeat(void *params);
+int* usage_repeat(double params[]);
+
 #endif
