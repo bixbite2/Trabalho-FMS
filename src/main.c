@@ -1,3 +1,7 @@
+// Bruno dos Santos     164439
+// Miguel Medina Castro 164437
+// Milena Bueno         164430
+
 #include <limits.h>
 #include <sys/sysinfo.h>
 #include <unistd.h>
@@ -108,9 +112,9 @@ int main(int argc, char *argv[])
         }
 
         double *results = usage_repeat(usage_params);
-        printf("%f\n",results[0]);
-        printf("%f\n",results[1]);
-        printf("%f\n",results[2]);
+        printf("CPU time left: %f\n",results[0]);
+        printf("Run time left: %f\n",results[1]);
+        printf("Max RAM not surpassed: %f\n",results[2]);
         // waitpid(pid, NULL, 0);
         printf("Father Process %d:\n", getpid());
         print_process_info(pid, 0);

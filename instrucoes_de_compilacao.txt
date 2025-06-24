@@ -1,0 +1,5 @@
+É só rodar make na raiz do programa.
+
+Ai rodar o ./my_app.out <binário>
+
+sendo o binário qualquer um que possa estar /bin

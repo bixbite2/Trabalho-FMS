@@ -5,15 +5,15 @@ int* get_usage_params() {
     char *input = NULL;
     int *usage_params = malloc(3 * sizeof(int));
 
-    printf("Tempo maximo de CPU: ");
+    printf("Tempo maximo de CPU(s): ");
     getline(&input, &zero, stdin);
     usage_params[0] = atoi(input);
 
-    printf("Tempo maximo de execução: ");
+    printf("Tempo maximo de execução(s): ");
     getline(&input, &zero, stdin);
     usage_params[1] = atoi(input);
 
-    printf("Uso máximo de RAM: ");
+    printf("Uso máximo de RAM(mb): ");
     getline(&input, &zero, stdin);
     usage_params[2] = atoi(input);
 
